@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FAA DRS Document Viewer</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <h1>FAA Document Viewer</h1>
@@ -48,7 +49,7 @@ async function fetchDocs() {
         }
 
         const data = await response.json();
-        const documents = data?.results?.slice(0, 750) || [];
+        const documents = data?.documents?.slice(0, 750) || [];
 
         const tbody = document.getElementById('results');
         tbody.innerHTML = '';
@@ -56,16 +57,16 @@ async function fetchDocs() {
             const tr = document.createElement('tr');
 
             const title = document.createElement('td');
-            title.textContent = doc.documentTitle || 'No Title';
+            title.textContent = doc.title || doc.documentNumber || 'Untitled';
             tr.appendChild(title);
 
             const date = document.createElement('td');
-            date.textContent = doc.documentDate || 'Unknown';
+            date.textContent = doc.docLastModifiedDate || '—';
             tr.appendChild(date);
 
             const linkTd = document.createElement('td');
             const link = document.createElement('a');
-            link.href = doc.downloadLink || '#';
+            link.href = doc.mainDocumentDownloadURL || '#';
             link.textContent = 'Download';
             linkTd.appendChild(link);
             tr.appendChild(linkTd);
