@@ -2,9 +2,29 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
+const FAA_DRS_API_KEY =
+  process.env.FAA_DRS_API_KEY || 'c480cd075825a9f44beab596ba0cada217476801';
+
 const port = process.env.PORT || 3000;
 
 const server = http.createServer((req, res) => {
+  if (req.url.startsWith('/api/doc-types')) {
+    fetch('https://drs.faa.gov/api/doc-types', {
+      headers: { 'x-api-key': FAA_DRS_API_KEY }
+    })
+      .then((apiRes) => apiRes.text())
+      .then((body) => {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(body);
+      })
+      .catch((err) => {
+        console.error('Error fetching doc types:', err);
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: 'Failed to fetch doc types' }));
+      });
+    return;
+  }
+
   let filePath = '.' + req.url;
   if (filePath === './') {
     filePath = './index.html';
