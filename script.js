@@ -1,8 +1,8 @@
 const FAA_DRS_API_KEY = "c480cd075825a9f44beab596ba0cada217476801";
 
 async function fetchDocs() {
-  const doctype = document.getElementById("doctype").value;
-  const url = `https://drs.faa.gov/api/drs/data-pull/${doctype}?offset=0&docLastModifiedDateSortOrder=DESC`;
+  const docType = document.getElementById("docType").value;
+  const url = `https://drs.faa.gov/api/drs/data-pull/${encodeURIComponent(docType)}?offset=0&docLastModifiedDateSortOrder=DESC`;
 
   try {
     const response = await fetch(url, {
