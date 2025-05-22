@@ -65,7 +65,7 @@ async function fetchDocTypes() {
 
 async function fetchDocs() {
     const docType = document.getElementById('docType').value;
-    const url = `https://drs.faa.gov/api/drs/data-pull/${docType}?offset=0`;
+    const url = `https://drs.faa.gov/api/drs/data-pull/${encodeURIComponent(docType)}?offset=0`;
 
     try {
         const response = await fetch(url, {
