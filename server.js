@@ -1,10 +1,37 @@
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
+
+const FAA_DRS_API_KEY = 'c480cd075825a9f44beab596ba0cada217476801';
 
 const port = process.env.PORT || 3000;
 
 const server = http.createServer((req, res) => {
+  if (req.url === '/api/doc-types') {
+    const options = {
+      hostname: 'drs.faa.gov',
+      path: '/api/doc-types',
+      headers: {
+        'x-api-key': FAA_DRS_API_KEY
+      }
+    };
+
+    https.get(options, apiRes => {
+      let data = '';
+      apiRes.on('data', chunk => {
+        data += chunk;
+      });
+      apiRes.on('end', () => {
+        res.writeHead(apiRes.statusCode || 500, { 'Content-Type': 'application/json' });
+        res.end(data);
+      });
+    }).on('error', err => {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Proxy request failed' }));
+    });
+    return;
+  }
   let filePath = '.' + req.url;
   if (filePath === './') {
     filePath = './index.html';
